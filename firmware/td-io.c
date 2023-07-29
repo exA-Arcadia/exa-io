@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
+#include "exa_core.h"
 #include <string.h>
 
 const uint PIN_JVS_RE = 2;
 const uint PIN_JVS_DE = 3;
 
-const uint PIN_JVS_SENSE_2_5V = 14;
 const uint PIN_JVS_SENSE_0V = 13;
 
 const uint PIN_JVS_TERMINATION = 15;
@@ -17,15 +17,15 @@ const uint PIN_SR_DATA = 20;
 const uint PIN_SR_CLK = 18;
 const uint PIN_SR_SH = 21;
 
-const uint PIN_METER1 = 7;
+const uint PIN_METER1 = 14;
 const uint PIN_METER2 = 8;
 const uint PIN_LOCKOUT1 = 10;
 const uint PIN_LOCKOUT2 = 9;
 
 const uint PIN_LED_ENUMERATED = PICO_DEFAULT_LED_PIN;
 const uint PIN_LED_DASH = 4;
-const uint PIN_DIP1 = 17;
-const uint PIN_DIP2 = 16;
+const uint PIN_DIP1 = 6;
+const uint PIN_DIP2 = 7;
 
 const uint16_t JVS_TERMINATION_THRESHOLD = (uint16_t)(3.75/2.0/3.3*4096);
 const uint16_t JVS_0V_THRESHOLD = (uint16_t)(1.25/2.0/3.3*4096);
@@ -230,9 +230,6 @@ int main() {
     gpio_init(PIN_JVS_DE);
     gpio_put(PIN_JVS_DE, 0); //disable transmitter
     gpio_set_dir(PIN_JVS_DE, GPIO_OUT);
-    gpio_init(PIN_JVS_SENSE_2_5V);
-    gpio_put(PIN_JVS_SENSE_2_5V, 1); // always appear present
-    gpio_set_dir(PIN_JVS_SENSE_2_5V, GPIO_OUT);
     gpio_init(PIN_JVS_SENSE_0V);
     gpio_put(PIN_JVS_SENSE_0V, 0);
     gpio_set_dir(PIN_JVS_SENSE_0V, GPIO_OUT);
@@ -280,6 +277,9 @@ int main() {
     gpio_init(PIN_DIP1);
     gpio_set_dir(PIN_DIP1, GPIO_IN);
     gpio_pull_up(PIN_DIP1);
+
+    /* Starts exa-related worker, isolated on a separate core. */
+    start_exa_core();
 
     update_termination();
 
