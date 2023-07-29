@@ -93,7 +93,7 @@ uint8_t meter_timeout_p2 = 0;
 #define SR_GAME 24
 
 const uint8_t JVS_COMM_VER = 0x20;
-const char id_str[] = "exA-Arcadia JVS' IO V1.3.1";
+const char id_str[] = "exA-Arcadia JVS' IO TYPE B V1.0.0";
 const char JVS_COMM_SUPPORT = 0x07;
 const uint JVS_COMM_SPEEDS[3] = { 115200, 1000000, 3000000 };
 
