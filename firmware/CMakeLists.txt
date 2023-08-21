@@ -14,7 +14,7 @@ add_subdirectory(third_party/pico_i2c_slave/i2c_slave)
 # rest of your project
 
 add_executable(td-io
-        td-io.c edid.c
+        td-io.c
         )
 
 # Pull in our pico_stdlib which aggregates commonly used features
