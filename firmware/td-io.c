@@ -23,6 +23,7 @@ const uint PIN_LOCKOUT1 = 10;
 const uint PIN_LOCKOUT2 = 9;
 
 const uint PIN_LED_ENUMERATED = PICO_DEFAULT_LED_PIN;
+const uint PIN_LED_DASH = 4;
 const uint PIN_DIP1 = 17;
 const uint PIN_DIP2 = 16;
 
@@ -85,9 +86,14 @@ uint8_t meter_timeout_p2 = 0;
 #define SR_SERVICE 31
 #define SR_TEST 30
 #define SR_TILT 29
+#define SR_P1_7 28
+#define SR_P1_8 27
+#define SR_P2_7 26
+#define SR_P2_8 25
+#define SR_GAME 24
 
 const uint8_t JVS_COMM_VER = 0x20;
-const char id_str[] = "TD;TD-IO;v1.3;https://github.com/tdaede/td-io";
+const char id_str[] = "exA-Arcadia JVS' IO V1.3.1";
 const char JVS_COMM_SUPPORT = 0x07;
 const uint JVS_COMM_SPEEDS[3] = { 115200, 1000000, 3000000 };
 
@@ -268,6 +274,9 @@ int main() {
     gpio_init(PIN_LED_ENUMERATED);
     gpio_put(PIN_LED_ENUMERATED, 0);
     gpio_set_dir(PIN_LED_ENUMERATED, GPIO_OUT);
+    gpio_init(PIN_LED_DASH);
+    gpio_put(PIN_LED_DASH, 0);
+    gpio_set_dir(PIN_LED_DASH, GPIO_OUT);
     gpio_init(PIN_DIP1);
     gpio_set_dir(PIN_DIP1, GPIO_IN);
     gpio_pull_up(PIN_DIP1);
@@ -339,6 +348,7 @@ int main() {
                         if (method_code < (sizeof(JVS_COMM_SPEEDS)/sizeof(JVS_COMM_SPEEDS[0]))) {
                             uart_init(uart0, JVS_COMM_SPEEDS[method_code]);
                             jvs_comm_method = method_code;
+                            gpio_put(PIN_LED_DASH, (method_code > 1) ? 1 : 0);
                         }
                         else {
                             printf("incompatible JVS Comm. method!\n");
@@ -423,8 +433,10 @@ int main() {
                             switches = (switches & ~(1 << SR_SERVICE)
                                        | (service_pressed << SR_SERVICE));
                         }
-                        msg_send[o] = ((switches >> SR_TEST) & 1) << 7
-                            | ((switches >> SR_TILT) & 1) << 6;
+                        if (((switches >> SR_GAME) & 1) || ((switches >> SR_TILT) & 1)) {
+                            switches |= (1 << SR_P1_1) | (1 << SR_P1_START);
+                        }
+                        msg_send[o] = ((switches >> SR_TEST) & 1) << 7;
                         o++;
                         //printf("Got switch request for %02x players\n", num_players);
                         for (int player = 0; player < num_players; player++) {
