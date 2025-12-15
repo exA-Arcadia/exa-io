@@ -456,7 +456,9 @@ int main() {
                                         | ((switches >> SR_SERVICE) & 1) << 6
                                         | ((switches >> SR_P1_START) & 1) << 7;
                                 } else if ((player == 0) && (byte == 1)) {
-                                    b = ((switches >> SR_P1_6) & 1) << 4
+                                    b = ((switches >> SR_P1_8) & 1) << 2
+                                        | ((switches >> SR_P1_7) & 1) << 3
+                                        | ((switches >> SR_P1_6) & 1) << 4
                                         | ((switches >> SR_P1_5) & 1) << 5
                                         | ((switches >> SR_P1_4) & 1) << 6
                                         | ((switches >> SR_P1_3) & 1) << 7;
@@ -469,7 +471,9 @@ int main() {
                                         | ((switches >> SR_P2_UP) & 1) << 5
                                         | ((switches >> SR_P2_START) & 1) << 7;
                                 } else if ((player == 1) && (byte == 1)) {
-                                    b = ((switches >> SR_P2_6) & 1) << 4
+                                    b = ((switches >> SR_P2_8) & 1) << 2
+                                        | ((switches >> SR_P2_7) & 1) << 3
+                                        | ((switches >> SR_P2_6) & 1) << 4
                                         | ((switches >> SR_P2_5) & 1) << 5
                                         | ((switches >> SR_P2_4) & 1) << 6
                                         | ((switches >> SR_P2_3) & 1) << 7;
