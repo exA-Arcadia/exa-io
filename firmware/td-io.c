@@ -424,14 +424,18 @@ int main() {
                          * frames. We limit coin processing at a rate well above bounciness but less
                          * than 1/60th of a second. */
                         static uint8_t service_pressed = 0;
+                        static uint8_t test_pressed = 0;
                         if ((now - last_process_coin) > 12000) {
                             process_coin(switches);
                             last_process_coin = now;
                             service_pressed = (switches >> SR_SERVICE) & 1;
+                            test_pressed = (switches >> SR_TEST) & 1;
                         }
                         else {
                             switches = (switches & ~(1 << SR_SERVICE)
                                        | (service_pressed << SR_SERVICE));
+                            switches = (switches & ~(1 << SR_TEST)
+                                       | (test_pressed << SR_TEST));
                         }
                         if (((switches >> SR_GAME) & 1) || ((switches >> SR_TILT) & 1)) {
                             switches |= (1 << SR_P1_1) | (1 << SR_P1_START);
