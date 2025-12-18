@@ -175,6 +175,8 @@ uint32_t read_switches() {
         r >>= 1;
         r |= (gpio_get(PIN_SR_DATA) ? 1 : 0) << 31;
         gpio_put(PIN_SR_CLK, 1);
+        /* Decrease the "clock" rate for more compatibility with alternate shift registers */
+        asm volatile("nop\nnop\n");
         gpio_put(PIN_SR_CLK, 0);
     }
     gpio_put(PIN_SR_SH, 0);
